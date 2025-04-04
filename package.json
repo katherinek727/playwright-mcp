@@ -30,7 +30,7 @@
     }
   },
   "dependencies": {
-    "@cloudflare/playwright": "file:../playwright-cloudflare/packages/playwright-cloudflare/cloudflare-playwright-0.0.1-next.tgz",
+    "@cloudflare/playwright": "^0.0.7",
     "@modelcontextprotocol/sdk": "^1.6.1",
     "agents": "^0.0.45",
     "commander": "^13.1.0",
