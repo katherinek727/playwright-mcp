@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 import { McpAgent } from 'agents/mcp';
-import { Context } from './context';
 import { createServer } from '.';
 
 export class PlaywrightMCP extends McpAgent<Env, {}, {}> {
-  private _context!: Context;
   // we can use a Server instead of a McpServer here
   // @ts-expect-error
-  server = createServer(this.env.BROWSER, {
-    vision: false,
-  });
+  server = createServer(this.env.BROWSER, { vision: false });
 
   async init() {
     // do nothing
