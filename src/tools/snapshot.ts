@@ -19,8 +19,12 @@ import zodToJsonSchema from 'zod-to-json-schema';
 
 import { captureAriaSnapshot, runAndWait } from './utils';
 
-import type * as playwright from 'playwright';
+import type * as playwright from '@cloudflare/playwright';
 import type { Tool } from './tool';
+
+// llama-3.3-70b-instruct-fp8-fast, which is the best model in workers AI for MCP,
+// insists on using string booleans for boolean values, so we need to ensure they are converted to boolean.
+const stringBoolean = () => z.enum(['true', 'false']).transform(e => e === 'true');
 
 export const snapshot: Tool = {
   schema: {
@@ -91,7 +95,7 @@ export const hover: Tool = {
 
 const typeSchema = elementSchema.extend({
   text: z.string().describe('Text to type into the element'),
-  submit: z.boolean().describe('Whether to submit entered text (press Enter after)'),
+  submit: z.boolean().or(stringBoolean()).describe('Whether to submit entered text (press Enter after)'),
 });
 
 export const type: Tool = {
@@ -133,7 +137,7 @@ export const selectOption: Tool = {
 };
 
 const screenshotSchema = z.object({
-  raw: z.boolean().optional().describe('Whether to return without compression (in PNG format). Default is false, which returns a JPEG image.'),
+  raw: z.boolean().or(stringBoolean()).optional().describe('Whether to return without compression (in PNG format). Default is false, which returns a JPEG image.'),
 });
 
 export const screenshot: Tool = {
