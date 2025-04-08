@@ -19,7 +19,7 @@ import zodToJsonSchema from 'zod-to-json-schema';
 
 import { captureAriaSnapshot, runAndWait } from './utils';
 
-import type * as playwright from 'playwright';
+import type * as playwright from '@cloudflare/playwright';
 import type { Tool } from './tool';
 
 export const snapshot: Tool = {
@@ -91,7 +91,7 @@ export const hover: Tool = {
 
 const typeSchema = elementSchema.extend({
   text: z.string().describe('Text to type into the element'),
-  submit: z.boolean().describe('Whether to submit entered text (press Enter after)'),
+  submit: z.coerce.boolean().describe('Whether to submit entered text (press Enter after)'),
 });
 
 export const type: Tool = {
@@ -133,7 +133,7 @@ export const selectOption: Tool = {
 };
 
 const screenshotSchema = z.object({
-  raw: z.boolean().optional().describe('Whether to return without compression (in PNG format). Default is false, which returns a JPEG image.'),
+  raw: z.coerce.boolean().optional().describe('Whether to return without compression (in PNG format). Default is false, which returns a JPEG image.'),
 });
 
 export const screenshot: Tool = {
