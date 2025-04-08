@@ -2,7 +2,7 @@
 
 ### Overview
 
-This project leverages Playwright for automated browser testing and integrates with Cloudflare Workers for deployment.
+This project leverages Playwright for automated browser testing and integrates with Cloudflare Workers, [Browser Rendering](https://developers.cloudflare.com/browser-rendering/) and [`@cloudflare/playwright`](https://github.com/cloudflare/playwright) for deployment.
 
 ### Build and Deploy
 
@@ -19,9 +19,9 @@ npm ci
 npx wrangler deploy
 ```
 
-### Configure in Claude Desktop
+### Use with Claude Desktop
 
-To integrate this project with Claude Desktop, use the following configuration:
+To use `playground-mcp` with [Claude Desktop](https://claude.ai/download), use the following configuration:
 
 1. Open the configuration file for Claude Desktop.
 2. Add the following JSON snippet under the `mcpServers` section:
@@ -33,14 +33,14 @@ To integrate this project with Claude Desktop, use the following configuration:
       "command": "npx",
       "args": [
         "mcp-remote",
-        "https://cloudflare-playwright-mcp.rui-figueira.workers.dev/sse"
+        "https://[my-mcp-url].workers.dev/sse"
       ]
     }
   }
 }
 ```
 
-3. Save the configuration file and restart Claude Desktop to apply the changes.
+3. Save the configuration file and **restart** Claude Desktop to apply the changes.
 
 This setup ensures that Claude Desktop can communicate with the Cloudflare Playwright MCP server.
 
