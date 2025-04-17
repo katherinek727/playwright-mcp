@@ -62,7 +62,7 @@ Example of a conversation:
 
 ### Use with Claude Desktop
 
-To use `playground-mcp` with [Claude Desktop](https://claude.ai/download), use the following configuration:
+As of now, [Claude Desktop](https://claude.ai/download) only supports local MCP servers. To use `playground-mcp` with Claude Desktop we make use of [mcp-remote](https://github.com/geelen/mcp-remote), a tool that proxies remote MCP servers and exposes them locally. Use the following configuration:
 
 1. Open the configuration file for Claude Desktop.
 2. Add the following JSON snippet under the `mcpServers` section:
@@ -84,6 +84,10 @@ To use `playground-mcp` with [Claude Desktop](https://claude.ai/download), use t
 3. Save the configuration file and **restart** Claude Desktop to apply the changes.
 
 This setup ensures that Claude Desktop can communicate with the Cloudflare Playwright MCP server.
+
+Here's an example of a session opening the TODO demo app, adding "buy lemons" and doing a screenshot, taking advantage of playwright-mcp tools and Browser Rendering:
+
+![alt text](docs/imgs/claudemcp.gif)
 
 ### Configure in VSCode Insiders
 
