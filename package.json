@@ -30,13 +30,13 @@
     }
   },
   "dependencies": {
-    "@cloudflare/playwright": "^0.0.7",
     "@modelcontextprotocol/sdk": "^1.6.1",
     "agents": "^0.0.45",
     "commander": "^13.1.0",
     "zod-to-json-schema": "^3.24.4"
   },
   "devDependencies": {
+    "@cloudflare/playwright": "^0.0.9",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.19.0",
     "@stylistic/eslint-plugin": "^3.0.1",

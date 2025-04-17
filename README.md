@@ -2,7 +2,7 @@
 
 ### Overview
 
-This project leverages Playwright for automated browser testing and integrates with Cloudflare Workers for deployment.
+This project leverages Playwright for automated browser testing and integrates with Cloudflare Workers, [Browser Rendering](https://developers.cloudflare.com/browser-rendering/) and [`@cloudflare/playwright`](https://github.com/cloudflare/playwright) for deployment.
 
 ### Build and Deploy
 
@@ -19,7 +19,7 @@ npm ci
 npx wrangler deploy
 ```
 
-### Configure in Cloudflare Playground AI
+### Use with Cloudflare AI Playground
 
 ![alt text](docs/imgs/playground-ai-screenshot.png)
 
@@ -60,9 +60,9 @@ Example of a conversation:
 | **User** | Take a final screenshot |
 | **Assistant** | *runs browser_take_screenshot tool*<br> ![alt text](docs/imgs/todomvc-screenshot-3.png) A final screenshot of the current page has been taken. The screenshot is in PNG format and is 50KB in size. |
 
-### Configure in Claude Desktop
+### Use with Claude Desktop
 
-To integrate this project with Claude Desktop, use the following configuration:
+As of now, [Claude Desktop](https://claude.ai/download) only supports local MCP servers. To use `playground-mcp` with Claude Desktop we make use of [mcp-remote](https://github.com/geelen/mcp-remote), a tool that proxies remote MCP servers and exposes them locally. Use the following configuration:
 
 1. Open the configuration file for Claude Desktop.
 2. Add the following JSON snippet under the `mcpServers` section:
@@ -74,16 +74,20 @@ To integrate this project with Claude Desktop, use the following configuration:
       "command": "npx",
       "args": [
         "mcp-remote",
-        "https://cloudflare-playwright-mcp.rui-figueira.workers.dev/sse"
+        "https://[my-mcp-url].workers.dev/sse"
       ]
     }
   }
 }
 ```
 
-3. Save the configuration file and restart Claude Desktop to apply the changes.
+3. Save the configuration file and **restart** Claude Desktop to apply the changes.
 
 This setup ensures that Claude Desktop can communicate with the Cloudflare Playwright MCP server.
+
+Here's an example of a session opening the TODO demo app, adding "buy lemons" and doing a screenshot, taking advantage of playwright-mcp tools and Browser Rendering:
+
+![alt text](docs/imgs/claudemcp.gif)
 
 ### Configure in VSCode Insiders
 
