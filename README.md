@@ -107,12 +107,12 @@ Alternatively, you can install the Playwright MCP server using the VS Code CLI:
 
 ```bash
 # For VS Code
-code --add-mcp '{"name":"cloudflare-playwright","type":"sse","url":"https://cloudflare-playwright-mcp.rui-figueira.workers.dev/sse"}'
+code --add-mcp '{"name":"cloudflare-playwright","type":"sse","url":"https://[my-mcp-url].workers.dev/sse"}'
 ```
 
 ```bash
 # For VS Code Insiders
-code-insiders --add-mcp '{"name":"cloudflare-playwright","type":"sse","url":"https://cloudflare-playwright-mcp.rui-figueira.workers.dev/sse"}'
+code-insiders --add-mcp '{"name":"cloudflare-playwright","type":"sse","url":"https://[my-mcp-url].workers.dev/sse"}'
 ```
 
 After installation, the Playwright MCP server will be available for use with your GitHub Copilot agent in VS Code.
