@@ -27,7 +27,7 @@ npx wrangler deploy
 
 - Navigate to https://playground.ai.cloudflare.com/
 - Ensure model is set to `llama-3.3-70b-instruct-fp8-fast`
-- In **MCP Servers**, set **URL** to https://cloudflare-playwright-mcp.rui-figueira.workers.dev/sse
+- In **MCP Servers**, set **URL** to `https://[my-mcp-url].workers.dev/sse`
 - Click **Connect**
 - Status should update to **Connected** and it should list 14 available tools
 
@@ -89,21 +89,9 @@ Here's an example of a session opening the TODO demo app, adding "buy lemons" an
 
 ![alt text](docs/imgs/claudemcp.gif)
 
-### Configure in VSCode Insiders
+### Configure in VSCode
 
-Install the Playwright MCP server in VS Code using one of these buttons:
-
-<!--
-// Generate using?:
-const config = JSON.stringify({ name: 'cloudflare-playwright', type: 'sse', url: 'https://cloudflare-playwright-mcp.rui-figueira.workers.dev/sse' });
-const urlForWebsites = `vscode:mcp/install?${encodeURIComponent(config)}`;
-// Github markdown does not allow linking to `vscode:` directly, so you can use our redirect:
-const urlForGithub = `https://insiders.vscode.dev/redirect?url=${encodeURIComponent(urlForWebsites)}`;
--->
-
-[<img alt="Install in VS Code Insiders" src="https://img.shields.io/badge/VS_Code_Insiders-VS_Code_Insiders?style=flat-square&label=Install%20Server&color=24bfa5">](https://insiders.vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522cloudflare-playwright%2522%252C%2522type%2522%253A%2522sse%2522%252C%2522url%2522%253A%2522https%253A%252F%252Fcloudflare-playwright-mcp.rui-figueira.workers.dev%252Fsse%2522%257D)
-
-Alternatively, you can install the Playwright MCP server using the VS Code CLI:
+You can install the Playwright MCP server using the [VS Code CLI](https://code.visualstudio.com/docs/configure/command-line):
 
 ```bash
 # For VS Code
