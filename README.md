@@ -13,9 +13,17 @@ Follow these steps to set up and deploy the project:
 npm ci
 ```
 
+2. Build:
+```bash
+cd cloudflare
+npm run build
+```
+
+
 2. Deploy to Cloudflare Workers:
 
 ```bash
+cd cloudflare/example
 npx wrangler deploy
 ```
 

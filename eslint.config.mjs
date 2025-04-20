@@ -196,4 +196,10 @@ export default [
     languageOptions,
     rules: baseRules,
   },
+  {
+    files: ['cloudflare/**/*'],
+    rules: {
+      'notice/notice': 'off',
+    },
+  },
 ];
