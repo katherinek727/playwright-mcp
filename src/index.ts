@@ -23,8 +23,7 @@ import { console } from './resources/console';
 import type { Tool } from './tools/tool';
 import type { Resource } from './resources/resource';
 import type { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import type { LaunchOptions } from '@cloudflare/playwright';
-import { BrowserWorker } from '@cloudflare/playwright';
+import type { LaunchOptions } from 'playwright';
 
 const commonTools: Tool[] = [
   common.pressKey,
@@ -72,9 +71,9 @@ type Options = {
 
 const packageJSON = require('../package.json');
 
-export function createServer(endpoint: BrowserWorker, options?: Options): Server {
+export function createServer(options?: Options): Server {
   const tools = options?.vision ? screenshotTools : snapshotTools;
-  return createServerWithTools(endpoint, {
+  return createServerWithTools({
     name: 'Playwright',
     version: packageJSON.version,
     tools,
