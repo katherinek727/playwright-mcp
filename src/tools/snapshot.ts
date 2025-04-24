@@ -212,8 +212,8 @@ const selectOption = defineTool({
 
 const screenshotSchema = z.object({
   raw: z.coerce.boolean().optional().describe('Whether to return without compression (in PNG format). Default is false, which returns a JPEG image.'),
-  element: z.string().optional().describe('Human-readable element description used to obtain permission to screenshot the element. If not provided, the screenshot will be taken of viewport. If element is provided, ref must be provided too.'),
-  ref: z.string().optional().describe('Exact target element reference from the page snapshot. If not provided, the screenshot will be taken of viewport. If ref is provided, element must be provided too.'),
+  element: z.string().optional().transform(v => v === 'null' ? undefined : v).describe('Human-readable element description used to obtain permission to screenshot the element. If not provided, the screenshot will be taken of viewport. If element is provided, ref must be provided too.'),
+  ref: z.string().optional().transform(v => v === 'null' ? undefined : v).describe('Exact target element reference from the page snapshot. If not provided, the screenshot will be taken of viewport. If ref is provided, element must be provided too.'),
 }).refine(data => {
   return !!data.element === !!data.ref;
 }, {
