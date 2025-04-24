@@ -1,5 +1,7 @@
 ## Cloudflare Playwright MCP
 
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/playwright-mcp/tree/main/cloudflare/example)
+
 ### Overview
 
 This project leverages Playwright for automated browser testing and integrates with Cloudflare Workers, [Browser Rendering](https://developers.cloudflare.com/browser-rendering/) and [`@cloudflare/playwright`](https://github.com/cloudflare/playwright) for deployment.
@@ -19,8 +21,7 @@ cd cloudflare
 npm run build
 ```
 
-
-2. Deploy to Cloudflare Workers:
+3. Deploy to Cloudflare Workers:
 
 ```bash
 cd cloudflare/example
