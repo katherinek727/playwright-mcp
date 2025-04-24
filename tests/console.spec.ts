@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-import { defineConfig } from '@playwright/test';
+import { test, expect } from './fixtures';
 
-import type { Project } from '@playwright/test';
+test('browser_console_messages', async ({ client }) => {
+  await client.callTool({
+    name: 'browser_navigate',
+    arguments: {
+      url: 'data:text/html,<html><script>console.log("Hello, world!");console.error("Error"); </script></html>',
+    },
+  });
 
-export default defineConfig({
-  testDir: './tests',
-  fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: 'list',
-  projects: [
-    { name: 'chrome' },
-    { name: 'msedge', use: { mcpBrowser: 'msedge' } },
-    { name: 'chromium', use: { mcpBrowser: 'chromium' } },
-    { name: 'firefox', use: { mcpBrowser: 'firefox' } },
-    { name: 'webkit', use: { mcpBrowser: 'webkit' } },
-  ].filter(Boolean) as Project[],
+  const resource = await client.callTool({
+    name: 'browser_console_messages',
+    arguments: {},
+  });
+  expect(resource).toHaveTextContent([
+    '[LOG] Hello, world!',
+    '[ERROR] Error',
+  ].join('\n'));
 });
