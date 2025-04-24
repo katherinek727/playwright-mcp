@@ -103,6 +103,7 @@ export default defineConfig({
         /@modelcontextprotocol\/sdk\/.*/,
         'agents',
         'yaml',
+        'zod',
         'zod-to-json-schema',
       ]
     },
