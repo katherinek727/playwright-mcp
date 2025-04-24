@@ -14,72 +14,129 @@
  * limitations under the License.
  */
 
+import path from 'path';
+import os from 'os';
+import fs from 'fs';
+
 import { createServerWithTools } from './server';
-import * as snapshot from './tools/snapshot';
-import * as common from './tools/common';
-import * as screenshot from './tools/screenshot';
-import { console } from './resources/console';
+import common from './tools/common';
+import console from './tools/console';
+import dialogs from './tools/dialogs';
+import files from './tools/files';
+import install from './tools/install';
+import keyboard from './tools/keyboard';
+import navigate from './tools/navigate';
+import network from './tools/network';
+import pdf from './tools/pdf';
+import snapshot from './tools/snapshot';
+import tabs from './tools/tabs';
+import screen from './tools/screen';
 
-import type { Tool } from './tools/tool';
-import type { Resource } from './resources/resource';
+import type { Tool, ToolCapability } from './tools/tool';
 import type { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import type { LaunchOptions } from '@cloudflare/playwright';
-import { BrowserWorker } from '@cloudflare/playwright';
+import type { LaunchOptions } from 'playwright';
 
-const commonTools: Tool[] = [
-  common.pressKey,
-  common.wait,
-  common.pdf,
-  common.close,
+const snapshotTools: Tool<any>[] = [
+  ...common(true),
+  ...console,
+  ...dialogs(true),
+  ...files(true),
+  ...install,
+  ...keyboard(true),
+  ...navigate(true),
+  ...network,
+  ...pdf,
+  ...snapshot,
+  ...tabs(true),
 ];
 
-const snapshotTools: Tool[] = [
-  common.navigate(true),
-  common.goBack(true),
-  common.goForward(true),
-  common.chooseFile(true),
-  snapshot.snapshot,
-  snapshot.click,
-  snapshot.hover,
-  snapshot.type,
-  snapshot.selectOption,
-  snapshot.screenshot,
-  ...commonTools,
-];
-
-const screenshotTools: Tool[] = [
-  common.navigate(false),
-  common.goBack(false),
-  common.goForward(false),
-  common.chooseFile(false),
-  screenshot.screenshot,
-  screenshot.moveMouse,
-  screenshot.click,
-  screenshot.drag,
-  screenshot.type,
-  ...commonTools,
-];
-
-const resources: Resource[] = [
-  console,
+const screenshotTools: Tool<any>[] = [
+  ...common(false),
+  ...console,
+  ...dialogs(false),
+  ...files(false),
+  ...install,
+  ...keyboard(false),
+  ...navigate(false),
+  ...network,
+  ...pdf,
+  ...screen,
+  ...tabs(false),
 ];
 
 type Options = {
+  browser?: string;
   userDataDir?: string;
-  launchOptions?: LaunchOptions;
+  headless?: boolean;
+  executablePath?: string;
+  cdpEndpoint?: string;
   vision?: boolean;
+  capabilities?: ToolCapability[];
 };
 
 const packageJSON = require('../package.json');
 
-export function createServer(endpoint: BrowserWorker, options?: Options): Server {
-  const tools = options?.vision ? screenshotTools : snapshotTools;
-  return createServerWithTools(endpoint, {
+export async function createServer(options?: Options): Promise<Server> {
+  let browserName: 'chromium' | 'firefox' | 'webkit';
+  let channel: string | undefined;
+  switch (options?.browser) {
+    case 'chrome':
+    case 'chrome-beta':
+    case 'chrome-canary':
+    case 'chrome-dev':
+    case 'msedge':
+    case 'msedge-beta':
+    case 'msedge-canary':
+    case 'msedge-dev':
+      browserName = 'chromium';
+      channel = options.browser;
+      break;
+    case 'chromium':
+      browserName = 'chromium';
+      break;
+    case 'firefox':
+      browserName = 'firefox';
+      break;
+    case 'webkit':
+      browserName = 'webkit';
+      break;
+    default:
+      browserName = 'chromium';
+      channel = 'chrome';
+  }
+  const userDataDir = options?.userDataDir ?? await createUserDataDir(browserName);
+
+  const launchOptions: LaunchOptions = {
+    headless: !!(options?.headless ?? (os.platform() === 'linux' && !process.env.DISPLAY)),
+    channel,
+    executablePath: options?.executablePath,
+  };
+
+  const allTools = options?.vision ? screenshotTools : snapshotTools;
+  const tools = allTools.filter(tool => !options?.capabilities || tool.capability === 'core' || options.capabilities.includes(tool.capability));
+  return createServerWithTools({
     name: 'Playwright',
     version: packageJSON.version,
     tools,
-    resources,
-    userDataDir: options?.userDataDir ?? '',
-    launchOptions: options?.launchOptions,
+    resources: [],
+    browserName,
+    userDataDir,
+    launchOptions,
+    cdpEndpoint: options?.cdpEndpoint,
   });
+}
+
+async function createUserDataDir(browserName: 'chromium' | 'firefox' | 'webkit') {
+  let cacheDirectory: string;
+  if (process.platform === 'linux')
+    cacheDirectory = process.env.XDG_CACHE_HOME || path.join(os.homedir(), '.cache');
+  else if (process.platform === 'darwin')
+    cacheDirectory = path.join(os.homedir(), 'Library', 'Caches');
+  else if (process.platform === 'win32')
+    cacheDirectory = process.env.LOCALAPPDATA || path.join(os.homedir(), 'AppData', 'Local');
+  else
+    throw new Error('Unsupported platform: ' + process.platform);
+  const result = path.join(cacheDirectory, 'ms-playwright', `mcp-${browserName}-profile`);
+  await fs.promises.mkdir(result, { recursive: true });
+  return result;
 }

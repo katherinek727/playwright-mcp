@@ -15,9 +15,6 @@
  */
 
 import http from 'http';
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
 
 import { program } from 'commander';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
@@ -27,28 +24,31 @@ import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
 import { createServer } from './index';
 import { ServerList } from './server';
 
-import type { LaunchOptions } from 'playwright';
 import assert from 'assert';
+import { ToolCapability } from './tools/tool';
 
 const packageJSON = require('../package.json');
 
 program
     .version('Version ' + packageJSON.version)
     .name(packageJSON.name)
+    .option('--browser <browser>', 'Browser or chrome channel to use, possible values: chrome, firefox, webkit, msedge.')
+    .option('--caps <caps>', 'Comma-separated list of capabilities to enable, possible values: tabs, pdf, history, wait, files, install. Default is all.')
+    .option('--cdp-endpoint <endpoint>', 'CDP endpoint to connect to.')
+    .option('--executable-path <path>', 'Path to the browser executable.')
     .option('--headless', 'Run browser in headless mode, headed by default')
+    .option('--port <port>', 'Port to listen on for SSE transport.')
     .option('--user-data-dir <path>', 'Path to the user data directory')
     .option('--vision', 'Run server that uses screenshots (Aria snapshots are used by default)')
-    .option('--port <port>', 'Port to listen on for SSE transport.')
     .action(async options => {
-      const launchOptions: LaunchOptions = {
-        headless: !!options.headless,
-        channel: 'chrome',
-      };
-      const userDataDir = options.userDataDir ?? await createUserDataDir();
       const serverList = new ServerList(() => createServer({
-        userDataDir,
-        launchOptions,
+        browser: options.browser,
+        userDataDir: options.userDataDir,
+        headless: options.headless,
+        executablePath: options.executablePath,
         vision: !!options.vision,
+        cdpEndpoint: options.cdpEndpoint,
+        capabilities: options.caps?.split(',').map((c: string) => c.trim() as ToolCapability),
       }));
       setupExitWatchdog(serverList);
 
@@ -61,29 +61,18 @@ program
     });
 
 function setupExitWatchdog(serverList: ServerList) {
-  process.stdin.on('close', async () => {
+  const handleExit = async () => {
     setTimeout(() => process.exit(0), 15000);
     await serverList.closeAll();
     process.exit(0);
-  });
+  };
+
+  process.stdin.on('close', handleExit);
+  process.on('SIGINT', handleExit);
+  process.on('SIGTERM', handleExit);
 }
 
 program.parse(process.argv);
-
-async function createUserDataDir() {
-  let cacheDirectory: string;
-  if (process.platform === 'linux')
-    cacheDirectory = process.env.XDG_CACHE_HOME || path.join(os.homedir(), '.cache');
-  else if (process.platform === 'darwin')
-    cacheDirectory = path.join(os.homedir(), 'Library', 'Caches');
-  else if (process.platform === 'win32')
-    cacheDirectory = process.env.LOCALAPPDATA || path.join(os.homedir(), 'AppData', 'Local');
-  else
-    throw new Error('Unsupported platform: ' + process.platform);
-  const result = path.join(cacheDirectory, 'ms-playwright', 'mcp-chrome-profile');
-  await fs.promises.mkdir(result, { recursive: true });
-  return result;
-}
 
 async function startSSEServer(port: number, serverList: ServerList) {
   const sessions = new Map<string, SSEServerTransport>();

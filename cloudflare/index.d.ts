@@ -15,31 +15,13 @@
  * limitations under the License.
  */
 
-import type { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { env } from 'cloudflare:workers';
+import { McpAgent } from 'agents/mcp';
+import { BrowserEndpoint } from '@cloudflare/playwright';
 
-type ToolCapability = 'core' | 'tabs' | 'pdf' | 'history' | 'wait' | 'files' | 'install';
+type ToolCapability = 'core' | 'tabs' | 'pdf' | 'history' | 'wait' | 'files';
 
 type Options = {
-    /**
-     * The browser to use (e.g., 'chrome', 'chromium', 'firefox', 'webkit', 'msedge').
-     */
-    browser?: string;
-    /**
-     * Path to a user data directory for browser profile persistence.
-     */
-    userDataDir?: string;
-    /**
-     * Whether to run the browser in headless mode (default: true).
-     */
-    headless?: boolean;
-    /**
-     * Path to a custom browser executable.
-     */
-    executablePath?: string;
-    /**
-     * Chrome DevTools Protocol endpoint to connect to an existing browser instance.
-     */
-    cdpEndpoint?: string;
     /**
      * Enable vision capabilities (e.g., visual automation or OCR).
      */
@@ -52,9 +34,8 @@ type Options = {
      *   - 'history': Browser history access.
      *   - 'wait': Wait and timing utilities.
      *   - 'files': File upload/download support.
-     *   - 'install': Browser installation utilities.
      */
     capabilities?: ToolCapability[];
 };
-export declare function createServer(options?: Options): Promise<Server>;
+export declare function createMcpAgent(endpoint: BrowserEndpoint, options?: Options): typeof McpAgent<typeof env, {}, {}>;
 export {};

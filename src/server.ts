@@ -16,25 +16,24 @@
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { CallToolRequestSchema, ListResourcesRequestSchema, ListToolsRequestSchema, ReadResourceRequestSchema } from '@modelcontextprotocol/sdk/types.js';
+import { zodToJsonSchema } from 'zod-to-json-schema';
 
 import { Context } from './context';
 
 import type { Tool } from './tools/tool';
 import type { Resource } from './resources/resource';
-import type { BrowserWorker, LaunchOptions } from '@cloudflare/playwright';
+import type { ContextOptions } from './context';
 
-type Options = {
+type Options = ContextOptions & {
   name: string;
   version: string;
   tools: Tool[];
   resources: Resource[],
-  userDataDir: string;
-  launchOptions?: LaunchOptions;
 };
 
-export function createServerWithTools(endpoint: BrowserWorker, options: Options): Server {
+export function createServerWithTools(options: Options): Server {
   const { name, version, tools, resources } = options;
-  const context = new Context(endpoint);
+  const context = new Context(tools, options);
   const server = new Server({ name, version }, {
     capabilities: {
       tools: {},
@@ -43,7 +42,13 @@ export function createServerWithTools(endpoint: BrowserWorker, options: Options)
   });
 
   server.setRequestHandler(ListToolsRequestSchema, async () => {
-    return { tools: tools.map(tool => tool.schema) };
+    return {
+      tools: tools.map(tool => ({
+        name: tool.schema.name,
+        description: tool.schema.description,
+        inputSchema: zodToJsonSchema(tool.schema.inputSchema)
+      })),
+    };
   });
 
   server.setRequestHandler(ListResourcesRequestSchema, async () => {
@@ -59,9 +64,21 @@ export function createServerWithTools(endpoint: BrowserWorker, options: Options)
       };
     }
 
+    const modalStates = context.modalStates().map(state => state.type);
+    if ((tool.clearsModalState && !modalStates.includes(tool.clearsModalState)) ||
+        (!tool.clearsModalState && modalStates.length)) {
+      const text = [
+        `Tool "${request.params.name}" does not handle the modal state.`,
+        ...context.modalStatesMarkdown(),
+      ].join('\n');
+      return {
+        content: [{ type: 'text', text }],
+        isError: true,
+      };
+    }
+
     try {
-      const result = await tool.handle(context, request.params.arguments);
-      return result;
+      return await context.run(tool, request.params.arguments);
     } catch (error) {
       return {
         content: [{ type: 'text', text: String(error) }],
@@ -91,14 +108,14 @@ export function createServerWithTools(endpoint: BrowserWorker, options: Options)
 
 export class ServerList {
   private _servers: Server[] = [];
-  private _serverFactory: () => Server;
+  private _serverFactory: () => Promise<Server>;
 
-  constructor(serverFactory: () => Server) {
+  constructor(serverFactory: () => Promise<Server>) {
     this._serverFactory = serverFactory;
   }
 
   async create() {
-    const server = this._serverFactory();
+    const server = await this._serverFactory();
     this._servers.push(server);
     return server;
   }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Cloudflare.
+ * Copyright (c) Microsoft Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { McpAgent } from 'agents/mcp';
-import { createServer } from '.';
 
-export class PlaywrightMCP extends McpAgent<Env, {}, {}> {
-  // we can use a Server instead of a McpServer here
-  // @ts-expect-error
-  server = createServer(this.env.BROWSER, { vision: false });
+import { test, expect } from './fixtures';
 
-  async init() {
-    // do nothing
-  }
-}
+test('browser_console_messages', async ({ client }) => {
+  await client.callTool({
+    name: 'browser_navigate',
+    arguments: {
+      url: 'data:text/html,<html><script>console.log("Hello, world!");console.error("Error"); </script></html>',
+    },
+  });
 
-export default PlaywrightMCP.mount('/sse');
+  const resource = await client.callTool({
+    name: 'browser_console_messages',
+    arguments: {},
+  });
+  expect(resource).toHaveTextContent([
+    '[LOG] Hello, world!',
+    '[ERROR] Error',
+  ].join('\n'));
+});

@@ -3,13 +3,12 @@
     "target": "ESNext",
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "module": "es2022",
-    "moduleResolution": "Bundler",
+    "moduleResolution": "node",
     "strict": true,
+    "module": "CommonJS",
     "outDir": "./lib"
   },
   "include": [
-    "worker-configuration.d.ts",
     "src",
   ],
 }
