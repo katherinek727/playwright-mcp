@@ -24,7 +24,7 @@ const wait: ToolFactory = captureSnapshot => defineTool({
     name: 'browser_wait',
     description: 'Wait for a specified time in seconds',
     inputSchema: z.object({
-      time: z.number().describe('The time to wait in seconds'),
+      time: z.coerce.number().describe('The time to wait in seconds'),
     }),
   },
 
@@ -63,8 +63,8 @@ const resize: ToolFactory = captureSnapshot => defineTool({
     name: 'browser_resize',
     description: 'Resize the browser window',
     inputSchema: z.object({
-      width: z.number().describe('Width of the browser window'),
-      height: z.number().describe('Height of the browser window'),
+      width: z.coerce.number().describe('Width of the browser window'),
+      height: z.coerce.number().describe('Height of the browser window'),
     }),
   },
 

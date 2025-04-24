@@ -24,7 +24,7 @@ const handleDialog: ToolFactory = captureSnapshot => defineTool({
     name: 'browser_handle_dialog',
     description: 'Handle a dialog',
     inputSchema: z.object({
-      accept: z.boolean().describe('Whether to accept the dialog.'),
+      accept: z.coerce.boolean().describe('Whether to accept the dialog.'),
       promptText: z.string().optional().describe('The text of the prompt in case of a prompt dialog.'),
     }),
   },

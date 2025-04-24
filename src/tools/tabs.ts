@@ -49,7 +49,7 @@ const selectTab: ToolFactory = captureSnapshot => defineTool({
     name: 'browser_tab_select',
     description: 'Select a tab by index',
     inputSchema: z.object({
-      index: z.number().describe('The index of the tab to select'),
+      index: z.coerce.number().describe('The index of the tab to select'),
     }),
   },
 
@@ -101,7 +101,7 @@ const closeTab: ToolFactory = captureSnapshot => defineTool({
     name: 'browser_tab_close',
     description: 'Close a tab',
     inputSchema: z.object({
-      index: z.number().optional().describe('The index of the tab to close. Closes current tab if not provided.'),
+      index: z.coerce.number().optional().describe('The index of the tab to close. Closes current tab if not provided.'),
     }),
   },
 

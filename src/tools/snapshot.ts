@@ -136,8 +136,8 @@ const hover = defineTool({
 
 const typeSchema = elementSchema.extend({
   text: z.string().describe('Text to type into the element'),
-  submit: z.boolean().optional().describe('Whether to submit entered text (press Enter after)'),
-  slowly: z.boolean().optional().describe('Whether to type one character at a time. Useful for triggering key handlers in the page. By default entire text is filled in at once.'),
+  submit: z.coerce.boolean().optional().describe('Whether to submit entered text (press Enter after)'),
+  slowly: z.coerce.boolean().optional().describe('Whether to type one character at a time. Useful for triggering key handlers in the page. By default entire text is filled in at once.'),
 });
 
 const type = defineTool({
@@ -211,7 +211,7 @@ const selectOption = defineTool({
 });
 
 const screenshotSchema = z.object({
-  raw: z.boolean().optional().describe('Whether to return without compression (in PNG format). Default is false, which returns a JPEG image.'),
+  raw: z.coerce.boolean().optional().describe('Whether to return without compression (in PNG format). Default is false, which returns a JPEG image.'),
   element: z.string().optional().describe('Human-readable element description used to obtain permission to screenshot the element. If not provided, the screenshot will be taken of viewport. If element is provided, ref must be provided too.'),
   ref: z.string().optional().describe('Exact target element reference from the page snapshot. If not provided, the screenshot will be taken of viewport. If ref is provided, element must be provided too.'),
 }).refine(data => {

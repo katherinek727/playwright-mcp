@@ -61,8 +61,8 @@ const moveMouse = defineTool({
     name: 'browser_screen_move_mouse',
     description: 'Move mouse to a given position',
     inputSchema: elementSchema.extend({
-      x: z.number().describe('X coordinate'),
-      y: z.number().describe('Y coordinate'),
+      x: z.coerce.number().describe('X coordinate'),
+      y: z.coerce.number().describe('Y coordinate'),
     }),
   },
 
@@ -88,8 +88,8 @@ const click = defineTool({
     name: 'browser_screen_click',
     description: 'Click left mouse button',
     inputSchema: elementSchema.extend({
-      x: z.number().describe('X coordinate'),
-      y: z.number().describe('Y coordinate'),
+      x: z.coerce.number().describe('X coordinate'),
+      y: z.coerce.number().describe('Y coordinate'),
     }),
   },
 
@@ -122,10 +122,10 @@ const drag = defineTool({
     name: 'browser_screen_drag',
     description: 'Drag left mouse button',
     inputSchema: elementSchema.extend({
-      startX: z.number().describe('Start X coordinate'),
-      startY: z.number().describe('Start Y coordinate'),
-      endX: z.number().describe('End X coordinate'),
-      endY: z.number().describe('End Y coordinate'),
+      startX: z.coerce.number().describe('Start X coordinate'),
+      startY: z.coerce.number().describe('Start Y coordinate'),
+      endX: z.coerce.number().describe('End X coordinate'),
+      endY: z.coerce.number().describe('End Y coordinate'),
     }),
   },
 
@@ -164,7 +164,7 @@ const type = defineTool({
     description: 'Type text',
     inputSchema: z.object({
       text: z.string().describe('Text to type into the element'),
-      submit: z.boolean().optional().describe('Whether to submit entered text (press Enter after)'),
+      submit: z.coerce.boolean().optional().describe('Whether to submit entered text (press Enter after)'),
     }),
   },
 
