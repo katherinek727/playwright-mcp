@@ -27,7 +27,7 @@ npx wrangler deploy
 
 ### Use with Cloudflare AI Playground
 
-![alt text](docs/imgs/playground-ai-screenshot.png)
+![alt text](https://github.com/cloudflare/playwright-mcp/raw/main/docs/imgs/playground-ai-screenshot.png)
 
 [Cloudflare playground AI](https://playground.ai.cloudflare.com/) is a great way to test MCP servers using LLM models available in Workers AI.
 
@@ -55,15 +55,15 @@ Example of a conversation:
 | **User** | And create another todo in yoda style |
 | **Assistant** | *runs browser_type tool*<br> A new todo entry "A walk, I must take" has been created in Yoda style. The page snapshot shows the updated content of the page, including the new todo entry. |
 | **User** | Take a screenshot |
-| **Assistant** | *runs browser_take_screenshot tool*<br> ![alt text](docs/imgs/todomvc-screenshot-1.png) A screenshot of the current page has been taken. The screenshot is in PNG format and is 56KB in size. |
+| **Assistant** | *runs browser_take_screenshot tool*<br> ![alt text](https://github.com/cloudflare/playwright-mcp/raw/main/docs/imgs/todomvc-screenshot-1.png) A screenshot of the current page has been taken. The screenshot is in PNG format and is 56KB in size. |
 | **User** | Now click the checkbox of the parrot todo entry |
 | **Assistant** | *runs browser_clickt tool*<br> The checkbox of the parrot todo entry "Polly wants a cracker" has been clicked. The page snapshot shows the updated content of the page, with the checkbox now checked. |
 | **User** | Take a screenshot |
-| **Assistant** | *runs browser_take_screenshot tool*<br> ![alt text](docs/imgs/todomvc-screenshot-2.png) A screenshot of the current page has been taken. The screenshot is in PNG format and is 58KB in size. |
+| **Assistant** | *runs browser_take_screenshot tool*<br> ![alt text](https://github.com/cloudflare/playwright-mcp/raw/main/docs/imgs/todomvc-screenshot-2.png) A screenshot of the current page has been taken. The screenshot is in PNG format and is 58KB in size. |
 | **User** | Remove completed todo entries |
 | **Assistant** | *runs browser_clickt tool*<br> The "Clear completed" button has been clicked. The page snapshot shows the updated content of the page, with the completed todo entry "Polly wants a cracker" removed. |
 | **User** | Take a final screenshot |
-| **Assistant** | *runs browser_take_screenshot tool*<br> ![alt text](docs/imgs/todomvc-screenshot-3.png) A final screenshot of the current page has been taken. The screenshot is in PNG format and is 50KB in size. |
+| **Assistant** | *runs browser_take_screenshot tool*<br> ![alt text](https://github.com/cloudflare/playwright-mcp/raw/main/docs/imgs/todomvc-screenshot-3.png) A final screenshot of the current page has been taken. The screenshot is in PNG format and is 50KB in size. |
 
 ### Use with Claude Desktop
 
@@ -92,7 +92,7 @@ This setup ensures that Claude Desktop can communicate with the Cloudflare Playw
 
 Here's an example of a session opening the TODO demo app, adding "buy lemons" and doing a screenshot, taking advantage of playwright-mcp tools and Browser Rendering:
 
-![alt text](docs/imgs/claudemcp.gif)
+![alt text](https://github.com/cloudflare/playwright-mcp/raw/main/docs/imgs/claudemcp.gif)
 
 ### Configure in VSCode
 
